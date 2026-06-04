@@ -6,9 +6,8 @@
 
 - **多格式支持**：PDF、DOCX、DOC、XLSX、XLS、PPTX、PPT、HTML、HTM、TXT → Markdown
 - **图片提取**：自动提取文档中的图片并保存
-- **OCR 识别**：扫描件/图片版 PDF 通过 Tesseract OCR 识别中英文文本（OCR 引擎已内置，无需额外安装）
+- **OCR 识别**：扫描件/图片版 PDF 通过 Tesseract OCR 识别中英文文本
 - **批量处理**：一次添加多个文件批量转换
-- **零依赖**：无需 Microsoft Office、Adobe Acrobat、或单独安装 Tesseract OCR
 - **简洁界面**：拖放操作，开箱即用
 
 ## 支持格式
@@ -25,7 +24,17 @@
 
 ## 安装
 
-下载 `MarkAny-Setup-1.0.0.exe` 运行安装即可，无需配置任何环境。安装包约 210MB（已内置 Tesseract OCR 引擎及中英文语言包）。
+下载 `MarkAny-1.0.2-mac.dmg`，打开后将 MarkAny 拖入 Applications 文件夹即可。
+
+### 前置依赖
+
+macOS 版本需要系统已安装 Tesseract OCR，用于扫描件 PDF 的文字识别：
+
+```bash
+brew install tesseract tesseract-lang
+```
+
+> 仅 PDF 扫描件需要 OCR，普通文档转换无需此依赖。
 
 ## 使用方法
 
@@ -39,15 +48,40 @@
 扫描版 PDF 的转换流程：
 1. 自动检测 PDF 是否为扫描件（按页面图片/文字比例判断）
 2. 对图片页面渲染为 300 DPI 图像
-3. 调用内置 Tesseract OCR 识别中英文文本
-4. 对识别结果进行文本清洗（去除控制字符）
+3. 自适应图像增强（去噪、CLAHE 对比度增强、自适应二值化）
+4. 调用 Tesseract OCR 识别中英文文本
+5. 对识别结果进行文本清洗（去除控制字符）
 
 OCR 质量取决于原始扫描件的清晰度。清晰度越高，识别效果越好。
 
 ## 系统要求
 
-- Windows 10/11 (64位)
-- 约 500MB 可用磁盘空间
+- macOS 11 (Big Sur) 或更高版本
+- 支持 Apple Silicon (ARM64) 和 Intel (x64)
+- Python 3.10+（开发模式需要）
+
+## 开发
+
+```bash
+# 安装前端依赖
+npm install
+
+# 安装 Python 依赖
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r src/python/requirements.txt
+
+# 启动开发服务器
+npm run dev
+
+# 运行测试
+npm run test          # 前端测试（Vitest）
+npm run test:python    # Python 后端测试（pytest）
+npm run test:all       # 全部测试
+
+# 构建 macOS DMG
+npm run build:mac
+```
 
 ## 联系作者
 
