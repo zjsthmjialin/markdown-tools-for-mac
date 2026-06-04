@@ -4,6 +4,7 @@ import { setupIpcHandlers, startPythonService, stopPythonService } from './ipc-h
 
 let win: BrowserWindow | null = null
 const isDev = process.env.NODE_ENV === 'development'
+const isMac = process.platform === 'darwin'
 
 function createWindow() {
   const primaryDisplay = screen.getPrimaryDisplay()
@@ -16,7 +17,9 @@ function createWindow() {
     minHeight: 500,
     x: Math.floor((width - 900) / 2),
     y: Math.floor((height - 700) / 2),
-    frame: false,
+    ...(isMac
+      ? { titleBarStyle: 'hiddenInset' }
+      : { frame: false }),
     show: false,
     backgroundColor: '#181818',
     webPreferences: {

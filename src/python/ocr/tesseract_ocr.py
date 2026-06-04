@@ -1,22 +1,32 @@
 import os
 import sys
+import platform
 import pytesseract
 from PIL import Image
 import io
 
 
 def _find_bundled_tesseract() -> str | None:
-    """Locate tesseract.exe bundled alongside this application."""
+    """Locate tesseract bundled alongside this application."""
     candidates = []
+    is_mac = platform.system() == 'Darwin'
 
     # 1. Relative to PyInstaller executable (production)
     if getattr(sys, 'frozen', False):
         exe_dir = os.path.dirname(sys.executable)
-        candidates.append(os.path.join(exe_dir, 'tesseract', 'tesseract.exe'))
+        exe_name = 'tesseract' if is_mac else 'tesseract.exe'
+        candidates.append(os.path.join(exe_dir, 'tesseract', exe_name))
 
     # 2. Relative to this source file (development)
     this_dir = os.path.dirname(os.path.abspath(__file__))
-    candidates.append(os.path.join(this_dir, '..', 'tesseract-portable', 'tesseract.exe'))
+    if is_mac:
+        candidates.extend([
+            '/opt/homebrew/bin/tesseract',
+            '/usr/local/bin/tesseract',
+            '/usr/bin/tesseract',
+        ])
+    else:
+        candidates.append(os.path.join(this_dir, '..', 'tesseract-portable', 'tesseract.exe'))
 
     # 3. Check TESSERACT_PATH env var
     env_path = os.environ.get('TESSERACT_PATH')
@@ -35,7 +45,7 @@ def _find_bundled_tessdata(tesseract_exe: str) -> str | None:
     """Find tessdata directory bundled alongside the tesseract executable."""
     candidates = []
 
-    # 1. tessdata/ directory next to tesseract.exe
+    # 1. tessdata/ directory next to tesseract executable
     tesseract_dir = os.path.dirname(tesseract_exe)
     candidates.append(os.path.join(tesseract_dir, 'tessdata'))
 
@@ -68,12 +78,19 @@ class TesseractOCR:
         else:
             self._tesseract_path = None
             # Let pytesseract try the system PATH
-            if os.name == 'nt':
+            system = platform.system()
+            if system == 'Windows':
                 default = os.path.join(os.environ.get('ProgramFiles', 'C:\\Program Files'),
                                        'Tesseract-OCR', 'tesseract.exe')
                 if os.path.isfile(default):
                     pytesseract.pytesseract.tesseract_cmd = default
                     self._tesseract_path = default
+            elif system == 'Darwin':
+                import shutil
+                found = shutil.which('tesseract')
+                if found:
+                    pytesseract.pytesseract.tesseract_cmd = found
+                    self._tesseract_path = found
 
         # Determine tessdata directory
         if self._tesseract_path:

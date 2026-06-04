@@ -1,4 +1,6 @@
 export default function TitleBar() {
+  const isMac = window.electronAPI?.isMac
+
   const handleMinimize = () => {
     window.electronAPI?.minimize()
   }
@@ -13,12 +15,14 @@ export default function TitleBar() {
 
   return (
     <div className="title-bar">
-      <div className="title-bar-drag">MarkAny</div>
-      <div className="title-bar-controls">
-        <button className="title-btn minimize" onClick={handleMinimize}>─</button>
-        <button className="title-btn maximize" onClick={handleMaximize}>□</button>
-        <button className="title-btn close" onClick={handleClose}>✕</button>
-      </div>
+      <div className={`title-bar-drag${isMac ? ' mac' : ''}`}>MarkAny</div>
+      {!isMac && (
+        <div className="title-bar-controls">
+          <button className="title-btn minimize" onClick={handleMinimize}>─</button>
+          <button className="title-btn maximize" onClick={handleMaximize}>□</button>
+          <button className="title-btn close" onClick={handleClose}>✕</button>
+        </div>
+      )}
     </div>
   )
 }

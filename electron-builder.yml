@@ -13,10 +13,11 @@ files:
   - "!**/*.pyc"
 
 extraResources:
-  - from: src/python/dist/markany-backend.exe
-    to: python-backend/markany-backend.exe
+  - from: src/python/dist/
+    to: python-backend/
     filter:
-      - "**/*"
+      - "markany-backend*"
+      - "!markany-backend.spec"
   - from: src/python/tesseract-portable
     to: python-backend/tesseract
     filter:
@@ -49,5 +50,29 @@ nsis:
   createDesktopShortcut: true
   createStartMenuShortcut: true
   shortcutName: MarkAny
+
+mac:
+  target:
+    - target: dmg
+      arch:
+        - universal
+  category: public.app-category.productivity
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  artifactName: ${productName}-${version}-mac.${ext}
+
+dmg:
+  contents:
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications
+  window:
+    width: 540
+    height: 380
 
 asar: true

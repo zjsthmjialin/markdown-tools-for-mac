@@ -34,22 +34,37 @@ export async function startPythonService() {
   let args: string[]
   let cwd: string
 
+  const isMac = process.platform === 'darwin'
+  const pythonCmd = isMac ? 'python3' : 'python'
+
   if (isDev) {
     const pythonDir = path.join(__dirname, '../../src/python')
-    command = 'python'
+    // Prefer venv Python (macOS) over system Python
+    const venvPython = isMac
+      ? path.join(__dirname, '../../.venv/bin/python3')
+      : null
+    command = (venvPython && fs.existsSync(venvPython)) ? venvPython : pythonCmd
     args = [path.join(pythonDir, 'main.py')]
     cwd = pythonDir
   } else {
     // In production, use the bundled PyInstaller executable
-    const backendExe = path.join(process.resourcesPath!, 'python-backend', 'markany-backend.exe')
-    // Fall back to Python script if PyInstaller bundle not found
+    const backendDir = path.join(process.resourcesPath!, 'python-backend')
+    const ext = isMac ? '' : '.exe'
+    let backendExe = path.join(backendDir, `markany-backend${ext}`)
+
+    if (!fs.existsSync(backendExe)) {
+      // Fallback: try without extension
+      backendExe = path.join(backendDir, 'markany-backend')
+    }
+
     if (fs.existsSync(backendExe)) {
       command = backendExe
       args = []
-      cwd = path.join(process.resourcesPath!, 'python-backend')
+      cwd = backendDir
     } else {
+      // Fall back to Python script if PyInstaller bundle not found
       const pythonDir = path.join(process.resourcesPath!, 'python-source')
-      command = 'python'
+      command = pythonCmd
       args = [path.join(pythonDir, 'main.py')]
       cwd = pythonDir
     }

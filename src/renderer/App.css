@@ -34,6 +34,10 @@
   color: #888;
 }
 
+.title-bar-drag.mac {
+  padding-left: 78px;
+}
+
 .title-bar-controls {
   display: flex;
   -webkit-app-region: no-drag;

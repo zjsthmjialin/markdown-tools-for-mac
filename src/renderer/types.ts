@@ -30,6 +30,7 @@ declare global {
       minimize: () => Promise<void>
       maximize: () => Promise<void>
       close: () => Promise<void>
+      isMac?: boolean
     }
   }
 }
