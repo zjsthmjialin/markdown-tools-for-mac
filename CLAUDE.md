@@ -72,6 +72,15 @@ Python Backend (http.server)
 - No ESLint, Prettier, or Python linter configured
 - Sample test files in `test_files/` at project root
 
-## Known Issues
+## Reverse Conversion
 
-- `src/python/markdown/to_document.py` is imported in `__init__.py` but the file does not exist — the reverse conversion (Markdown → DOCX/PPTX/HTML/PDF) feature is incomplete/removed
+- `src/python/md_reverse/to_document.py` — `MarkdownToDocument` class with `to_docx/to_pptx/to_html/to_pdf` methods
+- Renamed from `markdown/` to `md_reverse/` to avoid shadowing PyPI `markdown` library
+- `src/python/converters/markitdown_converter.py` — mock magika/onnxruntime to avoid ~200MB dependency
+
+## Build Notes
+
+- PyInstaller uses `--onedir` mode (spec: `markany-backend.spec`). Output: `dist/markany-backend/markany-backend`
+- Heavy exclusions: onnxruntime, magika, cv2, tensorflow, torch, scipy, matplotlib — dramatically reduces size
+- Ad-hoc signing via `build/afterSign.js` hook (no Apple Developer certificate needed)
+- macOS DMG at `release/MarkAny-<version>-mac.dmg`
