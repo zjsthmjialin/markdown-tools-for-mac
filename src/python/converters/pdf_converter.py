@@ -1,8 +1,6 @@
 from converters.base import BaseConverter, sanitize_text
 import fitz
 import io
-import cv2
-import numpy as np
 from PIL import Image
 
 
@@ -18,6 +16,8 @@ def enhance_scan_image(pil_image: Image.Image) -> Image.Image:
     4. 自适应二值化
     """
     try:
+        import cv2
+        import numpy as np
         img = np.array(pil_image)
 
         # 1. 转灰度

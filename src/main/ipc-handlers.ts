@@ -52,7 +52,11 @@ export async function startPythonService() {
     const ext = isMac ? '' : '.exe'
     let backendExe = path.join(backendDir, `markany-backend${ext}`)
 
-    if (!fs.existsSync(backendExe)) {
+    // onedir mode: executable is inside the markany-backend/ directory
+    const onedirExe = path.join(backendDir, 'markany-backend', `markany-backend${ext}`)
+    if (fs.existsSync(onedirExe)) {
+      backendExe = onedirExe
+    } else if (!fs.existsSync(backendExe)) {
       // Fallback: try without extension
       backendExe = path.join(backendDir, 'markany-backend')
     }
@@ -60,7 +64,7 @@ export async function startPythonService() {
     if (fs.existsSync(backendExe)) {
       command = backendExe
       args = []
-      cwd = backendDir
+      cwd = path.dirname(backendExe)
     } else {
       // Fall back to Python script if PyInstaller bundle not found
       const pythonDir = path.join(process.resourcesPath!, 'python-source')

@@ -1,11 +1,15 @@
 interface DirectionSelectProps {
   sourceFormat: string
+  targetFormat: string
   onSourceChange: (value: string) => void
+  onTargetChange: (value: string) => void
 }
 
 export default function DirectionSelect({
   sourceFormat,
-  onSourceChange
+  targetFormat,
+  onSourceChange,
+  onTargetChange
 }: DirectionSelectProps) {
   const sourceOptions = [
     { value: 'auto', label: '自动检测' },
@@ -14,7 +18,16 @@ export default function DirectionSelect({
     { value: 'xlsx', label: 'Excel 表格' },
     { value: 'pptx', label: 'PowerPoint' },
     { value: 'html', label: 'HTML 网页' },
-    { value: 'txt', label: '纯文本' }
+    { value: 'txt', label: '纯文本' },
+    { value: 'md', label: 'Markdown' }
+  ]
+
+  const targetOptions = [
+    { value: 'md', label: 'Markdown' },
+    { value: 'docx', label: 'Word 文档' },
+    { value: 'pptx', label: 'PowerPoint' },
+    { value: 'html', label: 'HTML 网页' },
+    { value: 'pdf', label: 'PDF 文档' }
   ]
 
   return (
@@ -36,8 +49,14 @@ export default function DirectionSelect({
       <div className="direction-group">
         <div className="direction-label">目标格式</div>
         <div className="select-wrapper">
-          <select disabled className="target-select">
-            <option value="md">Markdown</option>
+          <select
+            value={targetFormat}
+            onChange={e => onTargetChange(e.target.value)}
+            className="target-select"
+          >
+            {targetOptions.map(opt => (
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            ))}
           </select>
         </div>
       </div>

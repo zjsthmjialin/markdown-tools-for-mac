@@ -5,7 +5,7 @@
   "main": "dist-electron/main/index.js",
   "scripts": {
     "dev": "vite",
-    "python:build": "cd src/python && pyinstaller markany-backend.spec --clean --noconfirm",
+    "python:build": "cd src/python && ../../.venv/bin/python3 -m PyInstaller markany-backend.spec --clean --noconfirm",
     "build": "npm run tesseract:setup && npm run python:build && tsc && vite build && electron-builder",
     "build:mac": "npm run tesseract:setup && npm run python:build && tsc && vite build && electron-builder --mac",
     "build:win": "npm run tesseract:setup && npm run python:build && tsc && vite build && electron-builder --win",
@@ -19,7 +19,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:python": "cd src/python && python3 -m pytest tests/ -v",
+    "test:python": "cd src/python && [ -f ../.venv/bin/python3 ] && ../.venv/bin/python3 -m pytest tests/ -v || python3 -m pytest tests/ -v",
     "test:all": "npm run test && npm run test:python"
   },
   "build": {

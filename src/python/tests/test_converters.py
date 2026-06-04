@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from converters.markitdown_converter import MarkItDownConverter
 from converters.pdf_converter import PDFConverter
-from markdown.to_document import MarkdownToDocument
+from md_reverse.to_document import MarkdownToDocument
 
 TEST_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 TEST_FILES = os.path.join(TEST_DIR, 'test_files')

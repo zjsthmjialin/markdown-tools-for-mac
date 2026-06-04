@@ -6,6 +6,8 @@ directories:
   output: release
   buildResources: build
 
+icon: build/icon.icns
+
 files:
   - dist/**/*
   - dist-electron/**/*
@@ -26,6 +28,7 @@ extraResources:
     to: python-source/
     filter:
       - "converters/*.py"
+      - "md_reverse/*.py"
       - "utils/*.py"
       - "requirements.txt"
       - "!**/__pycache__"
@@ -56,6 +59,7 @@ mac:
     - target: dmg
       arch:
         - arm64
+  identity: "-"
   category: public.app-category.productivity
   hardenedRuntime: true
   gatekeeperAssess: false

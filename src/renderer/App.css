@@ -349,11 +349,10 @@
 }
 
 .select-wrapper select.target-select {
-  cursor: default;
+  cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
   padding-right: 24px;
-  background-image: none;
 }
 
 .select-wrapper select.target-select::-ms-expand {

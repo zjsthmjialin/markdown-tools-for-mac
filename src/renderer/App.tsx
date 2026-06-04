@@ -13,6 +13,7 @@ import { FileItem, SelectedFile } from './types'
 function App() {
   const [files, setFiles] = useState<FileItem[]>([])
   const [sourceFormat, setSourceFormat] = useState('auto')
+  const [targetFormat, setTargetFormat] = useState('md')
   const [outputPath, setOutputPath] = useState('')
   const [progress, setProgress] = useState(0)
   const [currentFile, setCurrentFile] = useState('')
@@ -111,7 +112,7 @@ function App() {
           const result = await window.electronAPI.convertFile(
             file.path,
             sourceFormat,
-            'md',
+            targetFormat,
             outputPath
           )
           setFiles(prev => prev.map(f =>
@@ -154,7 +155,9 @@ function App() {
         <Header />
         <DirectionSelect
           sourceFormat={sourceFormat}
+          targetFormat={targetFormat}
           onSourceChange={setSourceFormat}
+          onTargetChange={setTargetFormat}
         />
         <DropZone onFilesSelected={handleFilesSelected} onFilesSelectedViaDialog={handleFilesSelectedViaDialog} />
         <FileList files={files} onRemove={handleRemoveFile} />
